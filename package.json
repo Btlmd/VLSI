@@ -1,0 +1,11 @@
+{
+  "name": "VLSI",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "repository": "git@github.com:ayf19/VLSI.git",
+  "author": "ayf <ayf19@mails.tsinghua.edu.cn>",
+  "license": "MIT",
+  "scripts": {
+    "observe": "node ."
+  }
+}
