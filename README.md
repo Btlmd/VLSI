@@ -10,11 +10,13 @@ Birthday celebrations have special meaning in most cultures. However, how to pre
 
 ## Usage 
 
-To observe a `c7w`, run the following command
+- To observe a `c7w`, run the following command
 
-```bash
-yarn observe
-```
+    ```bash
+    yarn observe
+    ```
+    
+- See `./tex` for paper source code.
 
 ## Acknowledgement
 
