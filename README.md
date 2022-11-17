@@ -1,6 +1,8 @@
 # VLSI: Very Large Scale Inspection on c7w
 
-This repository provides the offical implementation of VLSI: Very Large Scale Inspection on `c7w`.
+This repository provides the official implementation of **VLSI: Very Large Scale Inspection on `c7w` **.
+
+[[Download Paper]](http://c7wyyds.lmd.red/VLSI_Very_Large_Scale_Inspection_on_c7w.pdf)
 
 ## Abstract
 
@@ -14,7 +16,7 @@ To observe a `c7w`, run the following command
 yarn observe
 ```
 
-## Acknowledgedment
+## Acknowledgement
 
-We'd like to especially thank c7w for his extraordinary contributions in ANN and Computer Organization projects, without which it would be impossible for us to make this trolling.
+We'd like to especially thank `c7w` for his extraordinary contributions in ANN and Computer Organization projects, without which it would be impossible for us to make this trolling.
 

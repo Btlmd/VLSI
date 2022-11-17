@@ -1,0 +1,807 @@
+% CVPR 2022 Paper Template
+% based on the CVPR template provided by Ming-Ming Cheng (https://github.com/MCG-NKU/CVPR_Template)
+% modified and extended by Stefan Roth (stefan.roth@NOSPAMtu-darmstadt.de)
+
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+%%%%%%%%% PAPER TYPE  - PLEASE UPDATE FOR FINAL VERSION
+\usepackage[final]{cvpr}      % To produce the REVIEW version
+%\usepackage{cvpr}              % To produce the CAMERA-READY version
+%\usepackage[pagenumbers]{cvpr} % To force page numbers, e.g. for an arXiv version
+
+% Include other packages here, before hyperref.
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{xcolor}
+
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{rotating}
+\usepackage{bigstrut}
+\usepackage{array}
+\usepackage{tabularx}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{lipsum}
+
+\usepackage{CJKutf8}
+
+\usepackage{listings}
+\usepackage{color}
+\definecolor{lightgray}{rgb}{.9,.9,.9}
+\definecolor{darkgray}{rgb}{.4,.4,.4}
+\definecolor{purple}{rgb}{0.65, 0.12, 0.82}
+
+\lstdefinelanguage{JavaScript}{
+  keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywords={class, export, boolean, throw, implements, import, this},
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{
+   language=JavaScript,
+   backgroundcolor=\color{lightgray},
+   extendedchars=true,
+   basicstyle=\footnotesize\ttfamily,
+   showstringspaces=false,
+   showspaces=false,
+   numbers=left,
+   numberstyle=\footnotesize,
+   numbersep=9pt,
+   tabsize=2,
+   breaklines=true,
+   showtabs=false,
+   captionpos=b
+}
+
+% It is strongly recommended to use hyperref, especially for the review version.
+% hyperref with option pagebackref eases the reviewers' job.
+% Please disable hyperref *only* if you encounter grave issues, e.g. with the
+% file validation for the camera-ready version.
+%
+% If you comment hyperref and then uncomment it, you should delete
+% ReviewTempalte.aux before re-running LaTeX.
+% (Or just hit 'q' on the first LaTeX run, let it finish, and you
+%  should be clear).
+\usepackage[pagebackref,breaklinks,colorlinks]{hyperref}
+\usepackage{verbatim}
+
+\newcommand\blfootnote[1]{%
+  \begingroup
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup
+}
+\newcommand\red[1]{%
+  \textcolor{red}{\textbf{#1}}
+}
+\newcommand{\doge}{%
+  \begingroup\normalfont
+  \includegraphics[height=2\fontcharht\font`\B]{doge.png}%
+  \endgroup
+}
+
+
+% Support for easy cross-referencing
+\usepackage[capitalize]{cleveref}
+\crefname{section}{Sec.}{Secs.}
+\Crefname{section}{Section}{Sections}
+\Crefname{table}{Table}{Tables}
+\crefname{table}{Tab.}{Tabs.}
+
+
+%%%%%%%%% PAPER ID  - PLEASE UPDATE
+\def\cvprPaperID{*****} % *** Enter the CVPR Paper ID here
+\def\confName{CVPR}
+\def\confYear{2022}
+
+
+\begin{document}
+
+%%%%%%%%% TITLE - PLEASE UPDATE
+\title{VLSI: Very Large Scale Inspection on c7w}
+
+\author{Lambda X$^{1*}$, Eren Zhao$^{1,2*}$, Ashitemaru Qian$^{1,6*}$, Burile Te$^{1*}$, Boss Qian$^{1,4*}$,\\
+ Lady He$^{1, 4*}$, TJ Zhang$^{5*}$, Zihan Wang$^{1*}$, Yifan An$^{1*}$, Feihan Li$^{1*}$, Bowen Wang$^{1*}$,\\
+SUN Xu$^{1*}$, Zhidong Wang$^{1*}$, 7w c$^{1,3*}$ \\
+$^1$Department of Computer Science and Technolody, Tsinghua University, \\
+$^2$Sensetime Research, \\
+$^3$Institute for AI Industry Research (AIR), Tsinghua University, \\
+$^4$NLP Group, DCST, IAI, BNRIST, Tsinghua University, \\
+% $^4$Department of Computer Science and Technolody, Tsinghua University\\
+$^5$School of Life Science, Tsinghua University, \\
+$^6$Multimedia and Networking Lab, Tsinghua University. \\
+{\tt\small \{liu-md20,zhaochen20,qhd19,xiangyan20,qianc20\}@mails.tsinghua.edu.cn} \\
+{\tt\small \{hbx20, zhangtj20, zhwang19, ayf19, li-fh21, wangbw21\}@mails.tsinghua.edu.cn} \\
+{\tt\small \{xcx19,  wang-zd19, gha20\}@mails.tsinghua.edu.cn} \\
+% For a paper whose authors are all at the same institution,
+% omit the following lines up until the closing ``}''.
+% Additional authors and addresses can be added with ``\and'',
+% just like the second author.
+% To save space, use either the email address or home page, not both
+}
+\maketitle
+
+\begin{abstract}
+Birthday celebrations have special meaning in most cultures. However, how to present birthday wishes to respected computer vision scholars with wide connections remains rarely studied. To this end, we propose a novel paradigm for birthday congratulations using modern academic collaboration tools and, to the best of our knowledge, presents its first experiments in human history on a \verb|c7w| individual. This framework uses an iterative algorithm to update celebration content and can easily scale to hundreds of collaborators. Extensive experiments manifest that our method brings about tremendous improvement in many key metrics, achieving new state-of-the-art. Code is released at \url{https://github.com/Btlmd/VLSI}.
+\end{abstract}
+\blfootnote{*Equal contribution.}
+
+%%%%%%%%% BODY TEXT
+\section{Introduction}
+\label{sec:intro}
+
+\verb|c7w|'s individual behaviour is a rarely studied field in CS because of its superiority and profoundness. From his roommates' perspective, his presence in DCST is insurmountable. Since his birth in 2002, \verb|c7w| has already manifests extraordinary talent in computer science. During the early years in his life, \verb|c7w| has accomplished all introductory courses in neural networks, machine learning, etc, showing his excellence among all peers. After entering Tsinghua University, \verb|c7w|'s talent became fully developed and he himself became more mature.
+
+\verb|c7w| devoted his time and talent to share the knowledge he possess. He participated in \emph{Program Buddy} as well as \emph{Q\&A Workshop} to spread the seed of new CS and won a great many respect and admiration. With high prestige and his own erudition, \verb|c7w| gradually stepped to the top of DCST's pyramid of power. In his 19s, \verb|c7w| has already becomes the absolute power in the SAST, but he never feel this is a platform enough to accomplish his goal.
+
+In the field of scientific research, \verb|c7w| is know as \emph{Paper Machine} and numerous articles with his name on have been accepted. However, when \verb|c7w| himself counted the honors, he only included the first-authored papers and ignored the others. He always claimed that \emph{My goal is to have 20+ first-author papers accepted before graduation}. The whole community is inspired by his diligence and positive attitude towards hard life. Besides, he always encouraged people around when they want to give up: \emph{How could you sleep soundly in your age when your peers are all striving for the better future? Get up and JUAN now!}
+
+Except for computer science, when it comes to the field of biology and medicine, \verb|c7w| also has enormous potential to be a model organism. First, he has a different rhythm and schedule than everyone else in his time zone. However, his brain seems to not be affected by this, so for medical researchers, \verb|c7w| is an object of great interest. Second, when refers to N-Acetylneuraminic acid, commonly abbreviated to \verb|NANA|, medical students think of some new molecules which could have them send out CNS papers. Inspired by that thinking, they strive to wake up for memorizing books to the extend which only a hard drive can achieve. Besides, \verb|c7w|'s head, which lacks hair, is an ideal place to practice hair implants for medical students.
+
+
+With all the retrospects above, we present this paper's main contributions as the followings: \\
+1. We for the first time bring out a new paradigm in birthday celebration and conduct study on birthday individual.\\
+2. We propose VLSI, an effective birthday individual inspection tool which is open source to the whole community. \\
+3. We conduct extensive experiments with our new framework and achieve SOTA on numerous key metrics.\\
+
+\section{Related Works}
+\label{sec:related-works}
+\subsection{Omnipotence of c7w}
+Many works have demonstrated the omnipotence of our subject \verb|c7w|. \verb|c7w| has consistently demonstrated immeasurable learning speed and stability across almost all domains. On the one hand, \verb|c7w| completed all the course projects at an astonishing speed. For example, before the start of the computer organization processor lab, \verb|c7w| had already successfully run the supervisor baseline and completed advanced functionalities such as interrupts, privileged modes, and virtual memory, which shocked the course advisory committee and teaching team. In terms of scientific research, \verb|c7w| published 3 machine learning related papers in just one summer. The speed and quality of his publications is amazing.
+
+In short, \verb|c7w| always brings about ineffable joy to his friends. Thus, it is imperative to celebrate the birthday of \verb|c7w| carefully.
+
+\subsection{Previous Attempts}
+Despite the importance of the birthday celebration of \verb|c7w|, how to creatively celebrate \verb|c7w|'s birthday remains barely visited. In 2021, known celebrations includes a cake with Xiaofeichai emoji and caption \emph{c7w tql!}, a red colored diagram with unidentified symbols and strokes, as illustrated in Fig~\ref{fig:previous}. Further, a post named \emph{Why c7w is GOD} have also been presented by Zhao \etal. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{previous.jpg}
+    \caption{Previous Works}
+    \label{fig:previous}
+\end{figure}
+
+However, we argue that critical flaws exists in these prior works. As his social status and influence continue to increase, it becomes more and more difficult to exhaustively compile all congratulatory messages, and using templates such as \emph{Why *** is GOD} will significantly limit the number of participants and the degree of joy. At this point, access to modern academic collaboration tools becomes indispensable. Therefore, we propose a new type of birthday greeting method, which can quickly complete the writing, signature and typesetting of a large amount of birthday greeting content, and has excellent forward compatibility with classic methods such as giving gifts, eating cakes, and throwing parties.
+
+\subsection{Novel potential value in medical field}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{ganglioc7w.jpg}
+   \caption{Novel Molecules (some containing one c7w and some containing more c7w-s)}
+    \label{fig:ganglioc7w}
+\end{figure}
+
+To celebrate the birthday of \verb|c7w|, medical students have the responsibility to notify him about his tremendous value in medical field which is described above. 
+
+(1) Rhythm. Previous studies have shown that nearly every mammalian cell harbors a molecular circadian clock that drives rhythmic gene expression to coordinate daily cycles in metabolism, physiology, and behavior. These clocks are synchronized to the daily environmental variation by the master circadian pacemaker located in the suprachiasmatic nucleus (SCN) of the hypothalamus, which is itself entrained to the light: dark cycle via direct retinal innervation (Bass and Takahashi, 2010; Mohawk \etal, 2012). Some improper environmental stimulus would cause shift of daily cycles set by core circadian clock molecules, then causing disturbance of rhythm. However, \verb|c7w| can regularly go to bed late and wake up late, that's really an AMAZING talent. Great chances are that some mutations have happened in genes controlling rhythm in \verb|c7w|. Therefore, DNA sequencing for \verb|c7w| could help human beings find crucial mutation for machinery soar, thus everyone can ignore their rhythm and work day and night. What an incredibly promising prospect that the capitalists would weep at the sight!
+
+(2) New molecules. The molecules we come up with are very similar to gangliosides, which contain one or more NANA(s). The structure is shown in Fig~\ref{fig:ganglioc7w}.
+
+
+(3) Hair implants. When it comes to hair implants, the virtue of modesty of \verb|c7w| shines through. He insists that Zhao be transplanted by me first. To celebrate \verb|c7w|'s birthday, I decide to conduct hair implant for Zhao for free in the near future. Please believe in me.
+
+
+\section{Method}
+
+\subsection{Quantum Observer Notification\protect\footnote{This subsection is mainly generated by GPT-2}.}
+
+In this section, we introduced a quantum-based methods to observe and inspect \verb|c7w|. Quantum mechanics, like general statistical models, is an active topic in scientific computation. This is trivially deduced from the well-known Schrödinger Equation~\ref{eq:s}
+
+\begin{equation}
+\label{eq:s}
+    \displaystyle i\hbar {\frac {\partial }{\partial t}}\Psi (x,t)=\left[-{\frac {\hbar ^{2}}{2m}}{\frac {\partial ^{2}}{\partial x^{2}}}+V(x,t)\right]\Psi (x,t)
+\end{equation}
+
+Quantum algorithms can be considered as methods for discovering the properties of objects, like \verb|c7w|. A popular method of observing a subject is a linear-point-based method, called a stochastic  method, where all the points on the object are considered independent. However, the quantum notification process is significantly different.  The quantum base notification process is expounded in Algorithm~\ref{alg:notification}. 
+
+\begin{algorithm}
+\caption{Notification Algorithm}\label{alg:notification}
+
+\begin{algorithmic}[1]
+% \Require $n \geq 0$
+% \Ensure $y = x^n$
+\State $S \gets \{x_0\}$
+\State $D \gets \phi$
+\While{$S \neq \phi$}
+    \State{$x \gets \text{Random-Element}(S)$}
+    \State{$S\gets S\cup \left(\text{Connected}\left(x\right)\cap \text{Connected}\left(\verb|c7w|\right)-D \right)$}
+    \State{$S\gets S-\{x\}$}
+    \State{$D\gets D\cup{x}$} 
+    \State{\Call{Observe}{x}}
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
+
+Where we empirically choose $x_0=\lambda(x)$.
+
+\subsection{Practical Solutions}
+\begin{figure*}[h]
+    \centering
+    \includegraphics[width=\textwidth]{ci.png}
+    \caption{Main Result}
+    \label{fig:main}
+\end{figure*}
+
+Though seeming graceful, the previously mentioned algorithm can hardly be adopted as a valid observation or notification process. Here we propose a numerical approximation with \emph{JavaScript}. Note that
+
+\begin{lstlisting}[caption=Principles of JSFuck]
+false       =>  ![]
+true        =>  !![]
+undefined   =>  [][[]]
+NaN         =>  +[![]]
+0           =>  +[]
+1           =>  +!+[]
+2           =>  !+[]+!+[]
+10          =>  [+!+[]]+[+[]]
+Array       =>  []
+Number      =>  +[]
+String      =>  []+[]
+Boolean     =>  ![]
+Function    =>  []["filter"]
+eval        =>  []["filter"]["constructor"]( CODE )()
+window      =>  []["filter"]["constructor"]("return this")()
+\end{lstlisting}
+
+Concise JavaScript codes can thus be generated.
+
+\blfootnote{*Including papers in submission.}
+\begin{table*}[htbp]
+  \centering
+  \caption{SOTA Table for the subject}
+    \begin{tabular}{c|ccccc}
+    \toprule
+          & Timestamp & \# of papers $^*$ & \# of github followers & \# of shared group with $\lambda(x)$ \bigstrut\\
+    \midrule
+    Previous SOTA & 1637164800 & 0     & $<$ 100 & 13   \bigstrut[t]\\
+    Ours  & \textbf{1668700800} & \textbf{4} & \textbf{111} & \textbf{149}  \bigstrut[b]\\
+    \bottomrule
+    \end{tabular}%
+  \label{tab:sota-table}%
+\end{table*}%
+\section{Experiments}
+
+The effectiveness and robustness of our proposed method is shown in Table~\ref{tab:sota-table}. As we all know, \emph{intuitive figures and SOTA results} are a must if your paper is to be accepted by any journal or conference, not to say a conscientious \verb|c7w| with utmost academic taste. \emph{For this reason}, we carefully screw up a bunch of metrics, which makes our experiments seems somehow more meaningful.  
+
+\subsection{Quantum Observations}
+
+We notice a ubiquitous signal teeming the universe, which we decode into ASCII as such
+
+\begin{lstlisting}[caption=Decoded Observation(Excerpts)]
+[][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]][
+  ([][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]] + [])[
+    !+[] + !+[] + !+[]
+  ] +
+    (!![] + [][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]])[
+      +!+[] + [+[]]
+    ] +
+    ([][[]] + [])[+!+[]] +
+    (![] + [])[!+[] + !+[] + !+[]] +
+    (!![] + [])[+[]] +
+    (!![] + [])[+!+[]] +
+    ([][[]] + [])[+[]] +
+    ([][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]] + [])[
+      !+[] + !+[] + !+[]
+    ] +
+    (!![] + [])[+[]] +
+    (!![] + [][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]])[
+      +!+[] + [+[]]
+    ] +
+    (!![] + [])[+!+[]]
+]...
+
+\end{lstlisting}
+
+See fully decoded representation in Appendix A.
+
+Adopting our method, this observation can be transformed by a JavaScript Interpreter and acts as if it were
+
+\begin{lstlisting}[caption=Result of the Observation]
+console.log("c7w, yyds");
+\end{lstlisting}
+
+The process is further illustrated in our code base and the main result is shown in Fig~\ref{fig:main}.
+
+\subsection{Romantic Index Metric}
+
+Given that \verb|c7w| is an extremely mysterious man in the Department of CST, we strongly believe that the man must have a deep understanding of love. He X.J. had stated that the romantic index metric can measure whether a man lives a happy life. Higher romantic index indicates a happier gender relationship.
+
+Our purpose is to measure the romantic index metric of \verb|c7w| precisely. To carry out the experiment, we have observed the living style of \verb|c7w|. Specifically, we record his behavior every hour.
+
+\subsection{Social Influence Metric (QoSAST)}
+
+Considering \verb|c7w|'s absolute power over SAST, it cannot be denied that we are supposed to propose a novel metric to evaluate \verb|c7w|'s influence over SAST. We name the new metric QoSAST, which is the abbreviation of \emph{Quality over SAST}.
+
+QoSAST is defined as how hard \verb|c7w| has been pushing his leader and members of the Network Division of SAST, which is vital for managing the social status of \verb|c7w| in SAST.
+
+Let $\mathcal{M}$ be the whole period where \verb|c7w| serves as a member of the Network Division of SAST, $\mathcal{N}$ be the whole period where \verb|c7w| serves as the vice chairman of the Network Division of SAST, $H(t)$ be the probability of Ashitemaru being pushed by \verb|c7w| at time $t \in \mathcal{M}$, $W(t)$ be the probability of Werkeytom being pushed by \verb|c7w| at time $t \in \mathcal{N}$, which means $H: \mathcal{M} \to \mathbb{R}, W: \mathcal{N} \to \mathbb{R}$.
+
+The basic QoSAST metric can be obtained by
+
+\begin{equation}
+{\rm QoSAST}_{\rm basic} = \alpha\int_\mathcal{M} H(t) {\rm d}t + \beta\int_\mathcal{N} W(t
+) {\rm d}t
+\end{equation}
+
+where $\alpha, \beta$ are configuration constants for how much the \verb|c7w|'s pushing takes effect.
+
+According to our experiments, the basic QoSAST are far from precise for a full evaluation of \verb|c7w|'s power over SAST. The key reason of the failure of basic QoSAST can be attributed to that we are not supposed to assume \verb|c7w| pay equal attention to every task in SAST.
+
+Considering the reasons above, we are supposed to sample the distribution of \verb|c7w|'s attention to tasks in SAST. Let $T$ be all tasks \verb|c7w| participating in in SAST, $A(x)$ be the attention \verb|c7w| paying to the task $x \in \mathcal{T}$, $T(t)$ be the task \verb|c7w| paying attention to at time $t \in \mathcal{M} \cup \mathcal{N}$.
+
+The advanced QoSAST, which is the final definition of QoSAST, can be obtained by
+\begin{equation}
+    \begin{aligned}
+    &{\rm QoSAST}_{\rm advanced}\\
+    =& \ \alpha\int_\mathcal{M} A(T(t))H(t) {\rm d}t + \beta\int_\mathcal{N} A(T(t))W(t) {\rm d}t
+\end{aligned}
+\end{equation}
+
+
+The problems in calculating advanced QoSAST are: \\
+1. Accurate approximation of $A(x)$ is hard to calculate. \\
+2. It is difficult to precisely sample $T(t)$ as \verb|c7w|'s irregular working hours. \\
+
+Fortunately, we may use sampling to approximate $A(x), T(t)$ to our best. We leave this problem to future works and we believe that \verb|c7w| can solve it in one minute.
+
+%[TODO: Holder はだんだん眠くなってるんだ、起きたら書き続けよう。]
+
+\section{Conclusion}
+
+VLSI, proposed by us in this paper, provides information about \verb|c7w|, which opens up the possibility of designing traps to catch the creature code-named \verb|c7w|. After all, living \verb|c7w| is needed for whether sequencing DNA, transplanting hair or inspiring the discovery of new molecules. In other words, this novel paradigm for birthday congratulations lets \verb|c7w| contribute to modern medicine and biology up to the hill. 
+
+To sum up, we have enough faith to conclude that our work is the first, and probably the greatest study on \verb|c7w| individual.
+%%%%%%%%% REFERENCES
+
+\begin{thebibliography}{}
+
+\bibitem{c1} Li F, \etal {\em C7WYYDS: Captured 7 WTF gods, Yet Yield to Damned  Super-qute nana.} IKUN What did You Do, AU. 2022, PP(99),1-1.
+
+\bibitem{c2} Eren Zhao, Li F, \etal {\em SEBSS: SAST has a Extremely Beautiful Senior Sister.}  IEEE Transactions on ABaABa Science and EE45E4, 2022.
+
+\end{thebibliography}{}
+\vspace{20pt}
+\Large{Appendix A. Observation}
+\begin{lstlisting}[caption=Decoded Observation(Full)]
+[][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]][
+  ([][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]] + [])[
+    !+[] + !+[] + !+[]
+  ] +
+    (!![] + [][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]])[
+      +!+[] + [+[]]
+    ] +
+    ([][[]] + [])[+!+[]] +
+    (![] + [])[!+[] + !+[] + !+[]] +
+    (!![] + [])[+[]] +
+    (!![] + [])[+!+[]] +
+    ([][[]] + [])[+[]] +
+    ([][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]] + [])[
+      !+[] + !+[] + !+[]
+    ] +
+    (!![] + [])[+[]] +
+    (!![] + [][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]])[
+      +!+[] + [+[]]
+    ] +
+    (!![] + [])[+!+[]]
+](
+  (!![] + [])[+!+[]] +
+    (!![] + [])[!+[] + !+[] + !+[]] +
+    (!![] + [])[+[]] +
+    ([][[]] + [])[+[]] +
+    (!![] + [])[+!+[]] +
+    ([][[]] + [])[+!+[]] +
+    (+[![]] + [][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]])[
+      +!+[] + [+!+[]]
+    ] +
+    (!![] + [])[!+[] + !+[] + !+[]] +
+    (+(!+[] + !+[] + !+[] + [+!+[]]))[
+      (!![] + [])[+[]] +
+        (!![] +
+          [][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]])[
+          +!+[] + [+[]]
+        ] +
+        ([] + [])[
+          ([][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]] +
+            [])[!+[] + !+[] + !+[]] +
+            (!![] +
+              [][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]])[
+              +!+[] + [+[]]
+            ] +
+            ([][[]] + [])[+!+[]] +
+            (![] + [])[!+[] + !+[] + !+[]] +
+            (!![] + [])[+[]] +
+            (!![] + [])[+!+[]] +
+            ([][[]] + [])[+[]] +
+            ([][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]] +
+              [])[!+[] + !+[] + !+[]] +
+            (!![] + [])[+[]] +
+            (!![] +
+              [][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]])[
+              +!+[] + [+[]]
+            ] +
+            (!![] + [])[+!+[]]
+        ][
+          ([][[]] + [])[+!+[]] +
+            (![] + [])[+!+[]] +
+            ((+[])[
+              ([][
+                (![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]
+              ] + [])[!+[] + !+[] + !+[]] +
+                (!![] +
+                  [][
+                    (![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]
+                  ])[+!+[] + [+[]]] +
+                ([][[]] + [])[+!+[]] +
+                (![] + [])[!+[] + !+[] + !+[]] +
+                (!![] + [])[+[]] +
+                (!![] + [])[+!+[]] +
+                ([][[]] + [])[+[]] +
+                ([][
+                  (![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]
+                ] + [])[!+[] + !+[] + !+[]] +
+                (!![] + [])[+[]] +
+                (!![] +
+                  [][
+                    (![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]
+                  ])[+!+[] + [+[]]] +
+                (!![] + [])[+!+[]]
+            ] + [])[+!+[] + [+!+[]]] +
+            (!![] + [])[!+[] + !+[] + !+[]]
+        ]
+    ](!+[] + !+[] + !+[] + [!+[] + !+[]]) +
+    (![] + [])[+!+[]] +
+    (![] + [])[!+[] + !+[]]
+)()(
+  [][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]][
+    ([][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]] + [])[
+      !+[] + !+[] + !+[]
+    ] +
+      (!![] + [][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]])[
+        +!+[] + [+[]]
+      ] +
+      ([][[]] + [])[+!+[]] +
+      (![] + [])[!+[] + !+[] + !+[]] +
+      (!![] + [])[+[]] +
+      (!![] + [])[+!+[]] +
+      ([][[]] + [])[+[]] +
+      ([][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]] + [])[
+        !+[] + !+[] + !+[]
+      ] +
+      (!![] + [])[+[]] +
+      (!![] + [][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]])[
+        +!+[] + [+[]]
+      ] +
+      (!![] + [])[+!+[]]
+  ](
+    (!![] + [])[+!+[]] +
+      (!![] + [])[!+[] + !+[] + !+[]] +
+      (!![] + [])[+[]] +
+      ([][[]] + [])[+[]] +
+      (!![] + [])[+!+[]] +
+      ([][[]] + [])[+!+[]] +
+      ([] + [])[
+        (![] + [])[+[]] +
+          (!![] +
+            [][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]])[
+            +!+[] + [+[]]
+          ] +
+          ([][[]] + [])[+!+[]] +
+          (!![] + [])[+[]] +
+          ([][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]] +
+            [])[!+[] + !+[] + !+[]] +
+          (!![] +
+            [][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]])[
+            +!+[] + [+[]]
+          ] +
+          (![] + [])[!+[] + !+[]] +
+          (!![] +
+            [][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]])[
+            +!+[] + [+[]]
+          ] +
+          (!![] + [])[+!+[]]
+      ]()[+!+[] + [!+[] + !+[]]] +
+      ((!![] + [])[+[]] +
+        [+!+[]] +
+        [!+[] + !+[] + !+[] + !+[]] +
+        [!+[] + !+[] + !+[]] +
+        (!![] + [])[+[]] +
+        [+!+[]] +
+        [!+[] + !+[] + !+[] + !+[] + !+[]] +
+        [!+[] + !+[] + !+[] + !+[] + !+[] + !+[] + !+[]] +
+        ([][[]] + [])[+!+[]] +
+        (![] + [])[!+[] + !+[] + !+[]] +
+        (!![] + [])[+[]] +
+        [+!+[]] +
+        [!+[] + !+[] + !+[] + !+[] + !+[]] +
+        [!+[] + !+[] + !+[] + !+[] + !+[] + !+[] + !+[]] +
+        (![] + [])[!+[] + !+[]] +
+        (!![] + [])[!+[] + !+[] + !+[]] +
+        (+(+!+[] + [+!+[]] + (!![] + [])[!+[] + !+[] + !+[]] + [!+[] + !+[]] + [+[]]) + [])[+!+[]] +
+        (![] + [])[!+[] + !+[]] +
+        (!![] + [])[+[]] +
+        [+!+[]] +
+        [!+[] + !+[] + !+[] + !+[] + !+[]] +
+        [!+[] + !+[] + !+[] + !+[] + !+[] + !+[] + !+[]] +
+        (!![] + [])[+[]] +
+        [+!+[]] +
+        [!+[] + !+[] + !+[] + !+[]] +
+        [!+[] + !+[] + !+[] + !+[] + !+[] + !+[] + !+[]] +
+        (!![] + [])[+[]] +
+        [!+[] + !+[] + !+[] + !+[] + !+[]] +
+        [+[]] +
+        (!![] + [])[+[]] +
+        [!+[] + !+[] + !+[] + !+[]] +
+        [!+[] + !+[] + !+[] + !+[] + !+[] + !+[] + !+[]] +
+        (!![] + [])[+[]] +
+        [+!+[]] +
+        [!+[] + !+[] + !+[] + !+[]] +
+        [!+[] + !+[] + !+[]] +
+        [!+[] + !+[] + !+[] + !+[] + !+[] + !+[] + !+[]] +
+        (!![] + [])[+[]] +
+        [+!+[]] +
+        [!+[] + !+[] + !+[] + !+[] + !+[] + !+[]] +
+        [!+[] + !+[] + !+[] + !+[] + !+[] + !+[] + !+[]] +
+        (!![] + [])[+[]] +
+        [!+[] + !+[] + !+[] + !+[] + !+[]] +
+        [!+[] + !+[] + !+[] + !+[]] +
+        (!![] + [])[+[]] +
+        [!+[] + !+[] + !+[] + !+[]] +
+        [+[]] +
+        (!![] + [])[+[]] +
+        [+!+[]] +
+        [!+[] + !+[] + !+[] + !+[] + !+[] + !+[] + !+[]] +
+        [+!+[]] +
+        (!![] + [])[+[]] +
+        [+!+[]] +
+        [!+[] + !+[] + !+[] + !+[] + !+[] + !+[] + !+[]] +
+        [+!+[]] +
+        ([][[]] + [])[!+[] + !+[]] +
+        (![] + [])[!+[] + !+[] + !+[]] +
+        (!![] + [])[+[]] +
+        [!+[] + !+[] + !+[] + !+[]] +
+        [+!+[]] +
+        (!![] + [])[+[]] +
+        [!+[] + !+[] + !+[] + !+[]] +
+        [!+[] + !+[] + !+[] + !+[] + !+[] + !+[] + !+[]] +
+        (!![] + [])[+[]] +
+        [!+[] + !+[] + !+[] + !+[] + !+[]] +
+        [+!+[]] +
+        (!![] + [])[+[]] +
+        [!+[] + !+[] + !+[] + !+[] + !+[] + !+[] + !+[]] +
+        [!+[] + !+[] + !+[]])
+        [
+          (![] + [])[!+[] + !+[] + !+[]] +
+            (+(!+[] + !+[] + [+!+[]] + [+!+[]]))[
+              (!![] + [])[+[]] +
+                (!![] +
+                  [][
+                    (![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]
+                  ])[+!+[] + [+[]]] +
+                ([] + [])[
+                  ([][
+                    (![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]
+                  ] + [])[!+[] + !+[] + !+[]] +
+                    (!![] +
+                      [][
+                        (![] + [])[+[]] +
+                          (![] + [])[!+[] + !+[]] +
+                          (![] + [])[+!+[]] +
+                          (!![] + [])[+[]]
+                      ])[+!+[] + [+[]]] +
+                    ([][[]] + [])[+!+[]] +
+                    (![] + [])[!+[] + !+[] + !+[]] +
+                    (!![] + [])[+[]] +
+                    (!![] + [])[+!+[]] +
+                    ([][[]] + [])[+[]] +
+                    ([][
+                      (![] + [])[+[]] +
+                        (![] + [])[!+[] + !+[]] +
+                        (![] + [])[+!+[]] +
+                        (!![] + [])[+[]]
+                    ] + [])[!+[] + !+[] + !+[]] +
+                    (!![] + [])[+[]] +
+                    (!![] +
+                      [][
+                        (![] + [])[+[]] +
+                          (![] + [])[!+[] + !+[]] +
+                          (![] + [])[+!+[]] +
+                          (!![] + [])[+[]]
+                      ])[+!+[] + [+[]]] +
+                    (!![] + [])[+!+[]]
+                ][
+                  ([][[]] + [])[+!+[]] +
+                    (![] + [])[+!+[]] +
+                    ((+[])[
+                      ([][
+                        (![] + [])[+[]] +
+                          (![] + [])[!+[] + !+[]] +
+                          (![] + [])[+!+[]] +
+                          (!![] + [])[+[]]
+                      ] + [])[!+[] + !+[] + !+[]] +
+                        (!![] +
+                          [][
+                            (![] + [])[+[]] +
+                              (![] + [])[!+[] + !+[]] +
+                              (![] + [])[+!+[]] +
+                              (!![] + [])[+[]]
+                          ])[+!+[] + [+[]]] +
+                        ([][[]] + [])[+!+[]] +
+                        (![] + [])[!+[] + !+[] + !+[]] +
+                        (!![] + [])[+[]] +
+                        (!![] + [])[+!+[]] +
+                        ([][[]] + [])[+[]] +
+                        ([][
+                          (![] + [])[+[]] +
+                            (![] + [])[!+[] + !+[]] +
+                            (![] + [])[+!+[]] +
+                            (!![] + [])[+[]]
+                        ] + [])[!+[] + !+[] + !+[]] +
+                        (!![] + [])[+[]] +
+                        (!![] +
+                          [][
+                            (![] + [])[+[]] +
+                              (![] + [])[!+[] + !+[]] +
+                              (![] + [])[+!+[]] +
+                              (!![] + [])[+[]]
+                          ])[+!+[] + [+[]]] +
+                        (!![] + [])[+!+[]]
+                    ] + [])[+!+[] + [+!+[]]] +
+                    (!![] + [])[!+[] + !+[] + !+[]]
+                ]
+            ](!+[] + !+[] + !+[] + [+!+[]])[+!+[]] +
+            (![] + [])[!+[] + !+[]] +
+            ([![]] + [][[]])[+!+[] + [+[]]] +
+            (!![] + [])[+[]]
+        ]((!![] + [])[+[]])
+        [
+          ([][
+            (!![] + [])[!+[] + !+[] + !+[]] +
+              ([][[]] + [])[+!+[]] +
+              (!![] + [])[+[]] +
+              (!![] + [])[+!+[]] +
+              ([![]] + [][[]])[+!+[] + [+[]]] +
+              (!![] + [])[!+[] + !+[] + !+[]] +
+              (![] + [])[!+[] + !+[] + !+[]]
+          ]() + [])[!+[] + !+[] + !+[]] +
+            (!![] +
+              [][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]])[
+              +!+[] + [+[]]
+            ] +
+            ([![]] + [][[]])[+!+[] + [+[]]] +
+            ([][[]] + [])[+!+[]]
+        ](
+          ([][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]]
+            [
+              ([][
+                (![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]
+              ] + [])[!+[] + !+[] + !+[]] +
+                (!![] +
+                  [][
+                    (![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]
+                  ])[+!+[] + [+[]]] +
+                ([][[]] + [])[+!+[]] +
+                (![] + [])[!+[] + !+[] + !+[]] +
+                (!![] + [])[+[]] +
+                (!![] + [])[+!+[]] +
+                ([][[]] + [])[+[]] +
+                ([][
+                  (![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]
+                ] + [])[!+[] + !+[] + !+[]] +
+                (!![] + [])[+[]] +
+                (!![] +
+                  [][
+                    (![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]
+                  ])[+!+[] + [+[]]] +
+                (!![] + [])[+!+[]]
+            ](
+              (!![] + [])[+!+[]] +
+                (!![] + [])[!+[] + !+[] + !+[]] +
+                (!![] + [])[+[]] +
+                ([][[]] + [])[+[]] +
+                (!![] + [])[+!+[]] +
+                ([][[]] + [])[+!+[]] +
+                (![] + [+[]])[
+                  ([![]] + [][[]])[+!+[] + [+[]]] +
+                    (!![] + [])[+[]] +
+                    (![] + [])[+!+[]] +
+                    (![] + [])[!+[] + !+[]] +
+                    ([![]] + [][[]])[+!+[] + [+[]]] +
+                    ([][
+                      (![] + [])[+[]] +
+                        (![] + [])[!+[] + !+[]] +
+                        (![] + [])[+!+[]] +
+                        (!![] + [])[+[]]
+                    ] + [])[!+[] + !+[] + !+[]] +
+                    (![] + [])[!+[] + !+[] + !+[]]
+                ]()[+!+[] + [+[]]] +
+                ![] +
+                (![] + [+[]])[
+                  ([![]] + [][[]])[+!+[] + [+[]]] +
+                    (!![] + [])[+[]] +
+                    (![] + [])[+!+[]] +
+                    (![] + [])[!+[] + !+[]] +
+                    ([![]] + [][[]])[+!+[] + [+[]]] +
+                    ([][
+                      (![] + [])[+[]] +
+                        (![] + [])[!+[] + !+[]] +
+                        (![] + [])[+!+[]] +
+                        (!![] + [])[+[]]
+                    ] + [])[!+[] + !+[] + !+[]] +
+                    (![] + [])[!+[] + !+[] + !+[]]
+                ]()[+!+[] + [+[]]]
+            )()
+            [
+              ([][
+                (![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]
+              ] + [])[!+[] + !+[] + !+[]] +
+                (!![] +
+                  [][
+                    (![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]
+                  ])[+!+[] + [+[]]] +
+                ([][[]] + [])[+!+[]] +
+                (![] + [])[!+[] + !+[] + !+[]] +
+                (!![] + [])[+[]] +
+                (!![] + [])[+!+[]] +
+                ([][[]] + [])[+[]] +
+                ([][
+                  (![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]
+                ] + [])[!+[] + !+[] + !+[]] +
+                (!![] + [])[+[]] +
+                (!![] +
+                  [][
+                    (![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]
+                  ])[+!+[] + [+[]]] +
+                (!![] + [])[+!+[]]
+            ](
+              (![] + [+[]])[
+                ([![]] + [][[]])[+!+[] + [+[]]] +
+                  (!![] + [])[+[]] +
+                  (![] + [])[+!+[]] +
+                  (![] + [])[!+[] + !+[]] +
+                  ([![]] + [][[]])[+!+[] + [+[]]] +
+                  ([][
+                    (![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]
+                  ] + [])[!+[] + !+[] + !+[]] +
+                  (![] + [])[!+[] + !+[] + !+[]]
+              ]()[+!+[] + [+[]]]
+            ) + [])[+!+[]]
+        ) +
+      ([] + [])[
+        (![] + [])[+[]] +
+          (!![] +
+            [][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]])[
+            +!+[] + [+[]]
+          ] +
+          ([][[]] + [])[+!+[]] +
+          (!![] + [])[+[]] +
+          ([][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]] +
+            [])[!+[] + !+[] + !+[]] +
+          (!![] +
+            [][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]])[
+            +!+[] + [+[]]
+          ] +
+          (![] + [])[!+[] + !+[]] +
+          (!![] +
+            [][(![] + [])[+[]] + (![] + [])[!+[] + !+[]] + (![] + [])[+!+[]] + (!![] + [])[+[]]])[
+            +!+[] + [+[]]
+          ] +
+          (!![] + [])[+!+[]]
+      ]()[+!+[] + [!+[] + !+[]]]
+  )()
+);
+\end{lstlisting}
+
+\end{document}
